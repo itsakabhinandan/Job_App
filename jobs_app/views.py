@@ -199,3 +199,97 @@ class ResumeUploadView(View):
         return render(request, 'upload/resume.html', {
             'form': form
         })
+
+class VideoView(View):
+
+    def get(self, request):
+        return render(request, 'video/base.html')
+
+class PostJobsView(View):
+
+    def get(self, request):
+        return render(request, 'dash_emp/typography.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_emp/typography.html')
+
+
+class ManageJobsView(View):
+
+    def get(self, request):
+        return render(request, 'dash_emp/table.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_emp/table.html')
+
+
+class UserView(View):
+
+    def get(self, request):
+        return render(request, 'dash_emp/user.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_emp/user.html')
+
+
+class DashView(View):
+
+    def get(self, request):
+        return render(request, 'dash_emp/dashboard.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_emp/dashboard.html')
+
+
+def can_dash(request):
+    return render(request, "dash_can/dashboard.html")
+
+
+class CanUserView(View):
+
+    def get(self, request):
+        return render(request, 'dash_can/user.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_can/user.html')
+
+
+class CanEduView(View):
+
+    def get(self, request):
+        return render(request, 'dash_can/typography.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_can/typography.html')
+
+class CanWorkView(View):
+
+    def get(self, request):
+        return render(request, 'dash_can/icons.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_can/icons.html')
+
+class CanApplyView(View):
+
+    def get(self, request):
+        return render(request, 'dash_can/table.html')
+
+    def post(self, request):
+        post_data = request.POST
+        print(post_data)
+        return render(request, 'dash_can/table.html')

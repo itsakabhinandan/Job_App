@@ -19,7 +19,7 @@
     <link href="{% static 'dash_emp/assets/css/animate.min.css' %}" rel="stylesheet"/>
 
     <!--  Light Bootstrap Table core CSS    -->
-    <link href="{% static 'dash_emp/assets/css/light-bootstrap-dashboard.css?v=1.4.0' %}" rel="stylesheet"/>
+    <link href="{% static 'dash_emp/assets/css/light-bootstrap-dashboard.css' %}" rel="stylesheet"/>
 
 
     <!--  CSS for Demo Purpose, don't include it in your project     -->
@@ -50,36 +50,37 @@
 
             <ul class="nav">
                 <li>
-                    <a href="dashboard.html">
+                    <a href="{% url 'dash' %}">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
                 <li>
-                    <a href="user.html">
+                    <a href="{% url 'user' %}">
                         <i class="pe-7s-user"></i>
                         <p>User Profile</p>
                     </a>
                 </li>
                 <li class="active">
-                    <a href="table.html">
+                    <a href="{% url 'manage_jobs' %}">
                         <i class="pe-7s-note2"></i>
                         <p>Manage Jobs</p>
                     </a>
                 </li>
                 <li>
-                    <a href="typography.html">
+                    <a href="{% url 'post_jobs' %}">
                         <i class="pe-7s-news-paper"></i>
                         <p>Post New Job</p>
                     </a>
                 </li>
+                <!--
                 <li>
                     <a href="icons.html">
                         <i class="pe-7s-science"></i>
                         <p>Shortlisted</p>
                     </a>
                 </li>
-                <!--
+
                 <li>
                     <a href="maps.html">
                         <i class="pe-7s-map-marker"></i>
@@ -291,7 +292,7 @@
     <script type="/text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
-	<script src="{% static 'dash_emp/assets/js/light-bootstrap-dashboard.js?v=1.4.0' %}"></script>
+	<script src="{% static 'dash_emp/assets/js/light-bootstrap-dashboard.js' %}"></script>
 
 	<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 	<script src="{% static 'dash_emp/assets/js/demo.js' %}"></script>

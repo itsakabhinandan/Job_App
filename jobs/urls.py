@@ -18,7 +18,7 @@ from django.conf.urls import url, include
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    url(r'^jobs_app/', include('jobs_app.urls')),
+    url(r'', include('jobs_app.urls')),
 
 
 ]
