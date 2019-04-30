@@ -37,7 +37,12 @@
                     <h2 class="title">Candidate's Registration Form</h2>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{% url 'sign_can' %}">{% csrf_token %}
+                    {% for field in form %}
+                    <div align="center" style="margin-bottom:10px;color:red">
+                        {{ field.errors }}
+                    </div>
+                    {% endfor %}
+                    <form method="POST" action="{% url 'user-signup' %}">{% csrf_token %}
 
 
                         <div class="form-row m-b-55">
@@ -80,7 +85,7 @@
                             <div class="name">Password</div>
                             <div class="value">
                                 <div class="input-group">
-                                    <input class="input--style-5" type="password" name="password">
+                                    <input class="input--style-5" type="password" name="password1">
                                 </div>
                             </div>
                         </div>
@@ -88,7 +93,7 @@
                             <div class="name">Confirm Password</div>
                             <div class="value">
                                 <div class="input-group">
-                                    <input class="input--style-5" type="password" name="cpassword">
+                                    <input class="input--style-5" type="password" name="password2">
                                 </div>
                             </div>
                         </div>

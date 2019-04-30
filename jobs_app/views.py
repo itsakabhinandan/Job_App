@@ -1,12 +1,94 @@
 from django.views import View
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 
-from jobs_app.forms import ResumeForm
+from jobs_app.forms import ResumeForm, RecruiterCreationForm
 
 from jobs_app.forms import SignupForm, Signupformrec, LoginForm
 from jobs_app.models import intro, Signup, Signuprec
 
 from jobs_app.utils import parse_resume
+
+
+class UserSignUpView(View):
+
+    def get(self, request):
+        return render(request, 'sign_can/sign_can.html')
+    
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            auth_login(request, user)
+            return redirect('can_dash')
+        return render(request, 'sign_can/sign_can.html', {
+            'form': form,
+        })
+
+class RecruiterSignUpView(View):
+
+    def get(self, request):
+        return render(request, 'sign_rec/sign_rec.html')
+
+    def post(self, request):
+        form = RecruiterCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            group = Group.objects.get(name='recruiter')
+            group.user_set.add(user)
+            user.profile.designation = form.cleaned_data.get('designation')
+            user.profile.company = form.cleaned_data.get('company')
+            user.profile.office_address = form.cleaned_data.get('company_address')
+            user.save()
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=password)
+            auth_login(request, user)
+            return redirect('dash')
+        return render(request, 'sign_rec/sign_rec.html', {
+            'form': form,
+        })
+
+class LoginView(View):
+
+    def get(self, request):
+        if request.user.is_authenticated():
+            if request.user.has_perm("can_access_recruiter_dashboard"):
+                return redirect("dash")
+            return redirect("can_dash")
+        return render(request, 'login/login.html')
+    
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                if user.has_perm('can_access_recruiter_dashboard'):
+                    return redirect('dash')
+                return redirect('can_dash')
+            else:
+                return render(request, 'login/login.html', {
+                    'form': form,
+                    'error': 'Username or password incorrect'
+                })
+        return render(request, 'login/login.html', {
+            'form': form,
+        })
+
+class LogoutView(View):
+
+    def get(self, request):
+        if request.user.is_authenticated():
+            auth_logout(request)
+        return redirect('home')
 
 
 def sign_can(request):
