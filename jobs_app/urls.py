@@ -12,13 +12,13 @@ urlpatterns = [
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^dashboard/$', views.can_dash, name='can_dash'),
     url(r'^dashboard/recruiter/$',views.dash_emp, name='dash'),
+    url(r'^jobs/create/$', views.JobCreationView.as_view(), name='create-job'),
+    url(r'^jobs/list/$', views.RecruiterManageJobsView.as_view(), name='recruiter-manage-jobs'),
 
     url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),
 
     url(r'^menuemp/$',views.menu_emp, name='menu_emp'),
-    url(r'^post_jobs/$', views.PostJobsView.as_view(), name='post_jobs'),
-    url(r'^manage_jobs/$', views.ManageJobsView.as_view(), name='manage_jobs'),
     url(r'^user/$', views.UserView.as_view(), name='user'),
 
 

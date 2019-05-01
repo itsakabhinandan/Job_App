@@ -1,10 +1,11 @@
 from django.views import View
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 
-from jobs_app.forms import ResumeForm, RecruiterCreationForm
+from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm
 
 from jobs_app.forms import SignupForm, Signupformrec, LoginForm
 from jobs_app.models import intro, Signup, Signuprec
@@ -90,89 +91,36 @@ class LogoutView(View):
             auth_logout(request)
         return redirect('home')
 
+class JobCreationView(PermissionRequiredMixin, View):
 
-def sign_can(request):
-    form = SignupForm()
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
+    permission_required = ("can_create_job", )
+
+    def get(self, request):
+        return render(request, 'dash_emp/create_job.html')
+    
+    def post(self, request):
+        form = JobForm(request.POST)
         if form.is_valid():
-            a = request.POST['first_name']
-            b = request.POST['last_name']
-            c = request.POST['email']
-            un = form.cleaned_data['username']
-            p = form.cleaned_data['password']
-            cp = form.cleaned_data['cpassword']
+            job = form.save(commit=False)
+            job.user = request.user
+            job.save()
+            return render(request, 'dash_emp/create_job.html')
+        return render(request, 'dash_emp/create_job.html', {
+            'form': form,
+        })
 
-            if p == cp:
-                s = Signup()
-                s.first_name = a
-                s.last_name = b
-                s.email = c
-                s.username = un
-                s.password = p
-                s.cpassword = cp
-                s.save()
-                context = {
-                    'form': form,
-                    'data': 'data is saved'
-                }
-                return render(request, 'login/login.html', context)
-            else:
-                form = SignupForm()
-                context = {
-                    'form': form,
-                    'data': 'password is not same'
-                }
-                return render(request, 'sign_can/sign_can.html', context)
-        else:
-            form = SignupForm()
-            return render(request, 'sign_can/sign_can.html', {'form': form})
-    return render(request, 'sign_can/sign_can.html', {'form': form})
+class RecruiterManageJobsView(PermissionRequiredMixin, View):
 
+    permission_required = ("can_post_job", )
 
-def sign_rec(request):
-    form = Signupformrec()
-    if request.method == 'POST':
-        form = Signupformrec(request.POST)
-        if form.is_valid():
-            a = request.POST['first_name']
-            b = request.POST['last_name']
-            c = request.POST['email']
-            d = request.POST['designation']
-            e = request.POST['company']
-            f = request.POST['office_ad']
-            un = form.cleaned_data['username']
-            p = form.cleaned_data['password']
-            cp = form.cleaned_data['cpassword']
-
-            if p == cp:
-                s = Signuprec()
-                s.first_name = a
-                s.last_name = b
-                s.email = c
-                s.designation = d
-                s.company = e
-                s.office_ad = f
-                s.username = un
-                s.password = p
-                s.cpassword = cp
-                s.save()
-                context = {
-                    'form': form,
-                    'data': 'data is saved'
-                }
-                return render(request, 'login/login.html', context)
-            else:
-                form = Signupformrec()
-                context = {
-                    'form': form,
-                    'data': 'password is not same'
-                }
-                return render(request, 'sign_rec/sign_rec.html', context)
-        else:
-            form = Signupformrec()
-            return render(request, 'sign_rec/sign_rec.html', {'form': form})
-    return render(request, 'sign_rec/sign_rec.html', {'form': form})
+    def get(self, request):
+        jobs = request.user.job_set.all()
+        print(jobs)
+        for job in jobs:
+            print(job.jobapplication_set.count())
+        return render(request, 'dash_emp/manage_jobs.html', {
+            'jobs': jobs
+        })
 
 
 def home(request):
@@ -191,18 +139,6 @@ def home(request):
 
         return render(request, 'jobs_app/index.html')
 
-
-
-
-
-def sign_rec(request):
-    return render(request, "sign_rec/sign_rec.html")
-
-
-# def sign_can(request):
-# return render(request, "sign_can/sign_can.html")
-
-
 def menu_emp(request):
     return render(request, "menu_emp/menu_emp.html")
 
@@ -213,52 +149,6 @@ def menu_can(request):
 
 def dash_emp(request):
     return render(request, "dash_emp/dashboard.html")
-
-
-def login_view(request):
-    form = LoginForm()
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            u = form.cleaned_data['username']
-            p = form.cleaned_data['password']
-            s = Signup.objects.filter(username=u)
-            if len(s) > 0:
-                s = s[0]
-                du = s.username
-                dp = s.password
-                if u == du and p == dp:
-                    request.session['username'] = u
-                    context = {
-                        'username': u,
-                        'data ':' you are logged in'
-                    }
-                    return render(request, 'dash_emp/dashboard.html', context)
-                else:
-                    form = LoginForm()
-                    context = {
-                        'form': form,
-                        'data': 'wrong username and password'
-                    }
-                    return render(request, 'login/login.html', context)
-            else:
-                form = LoginForm()
-                context = {
-                    'form':form,
-                    'data':'data not found'
-                }
-                return render(request, 'login/login.html', context)
-    elif request.method == 'GET':
-        if 'user' in request.GET:
-            if request.session.has_key('username'):
-                request.session.flush()
-        if request.session.has_key('username'):
-            user_data=request.session['username']
-            context={'user_data':user_data,
-                     'data':'hello you are logged in'}
-            return render(request, 'dash_emp/dashboard.html', context)
-        else:
-            return render(request,'login/login.html', {'form': form})
 
 
 class ResumeUploadView(View):
@@ -286,28 +176,6 @@ class VideoView(View):
 
     def get(self, request):
         return render(request, 'video/base.html')
-
-class PostJobsView(View):
-
-    def get(self, request):
-        return render(request, 'dash_emp/typography.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_emp/typography.html')
-
-
-class ManageJobsView(View):
-
-    def get(self, request):
-        return render(request, 'dash_emp/table.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_emp/table.html')
-
 
 class UserView(View):
 

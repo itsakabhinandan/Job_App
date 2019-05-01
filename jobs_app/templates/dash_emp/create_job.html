@@ -1,0 +1,122 @@
+{% extends 'dash_emp/base.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Job Title</h4>
+                    </div>
+                    <div class="content">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Your Job Title Here </label>
+                                        <input type="text" class="form-control" placeholder="Job Title" name="title" value="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="title">Job Description</h4>
+                            <br>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Job Description Here </label>
+                                        <textarea style="resize:none" rows="7" type="text" class="form-control" placeholder="Job Description" name="description" value=""></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="title">Job Summary</h4>
+                            <br>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label> Select Category</label>
+                                    <div class="form-group">
+                                        <select name="category" class="form-control here">" />
+                                            <option value="">Select Category</option>
+                                            <option value="accounting">Accounting/Finance</option>
+                                            <option value="computer">Computer Sciences</option>
+                                            <option value="electrical">Electrical</option>
+                                            <option value="electronic">E&C</option>
+                                            <option value="civil">Civil</option>
+                                            <option value="mechanical">Mechanical</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Job Type</label>
+                                            <select name="type" class="form-control here">" />
+                                            <option value="">Job Type</option>
+                                            <option value="accounting">Accounting/Finance</option>
+                                            <option value="computer">Computer Sciences</option>
+                                            <option value="electrical">Electrical</option>
+                                            <option value="electronic">E&C</option>
+                                            <option value="civil">Civil</option>
+                                            <option value="mechanical">Mechanical</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label> Qualification</label>
+                                    <div class="form-group">
+                                        <select name="qualification" class="form-control here">" />
+                                            <option value="">Qualification</option>
+                                            <option value="matric">Matriculation</option>
+                                            <option value="inter">Intermediate</option>
+                                            <option value="grad">Graduate</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Experience</label>
+                                            <select name="experience" class="form-control here">" />
+                                            <option value="">Experience</option>
+                                            <option value="1-2">1-2 year</option>
+                                            <option value="2-5">2-5 year</option>
+                                            <option value="5+">5 year</option>
+
+
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Deadline</label>
+
+                                            <input id="deadline" name="deadline" class="form-control here" type="date" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-info btn-fill">Create Job</button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
