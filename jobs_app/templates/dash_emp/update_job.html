@@ -1,0 +1,121 @@
+{% extends 'dash_emp/base.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Job Title</h4>
+                    </div>
+                    <div class="content">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Your Job Title Here </label>
+                                        <input type="text" class="form-control" placeholder="Job Title" name="title" value="{{form.title.value}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="title">Job Description</h4>
+                            <br>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Job Description Here </label>
+                                        <textarea style="resize:none" rows="7" type="text" class="form-control" placeholder="Job Description" name="description">{{form.description.value}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="title">Job Summary</h4>
+                            <br>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label> Select Category</label>
+                                    <div class="form-group">
+                                        <select name="category" class="form-control here">" />
+                                            <option value="">Select Category</option>
+                                            <option value="accounting" {% if form.category.value == 'accounting' %}selected{%endif%}>Accounting/Finance</option>
+                                            <option value="computer" {% if form.category.value == 'computer' %} selected {% endif %}>Computer Sciences</option>
+                                            <option value="electrical" {% if form.category.value == 'electrical' %} selected {% endif %}>Electrical</option>
+                                            <option value="electronic" {% if form.category.value == 'electronic' %} selected {% endif %}>E&C</option>
+                                            <option value="civil" {% if form.category.value == 'civil' %} selected {% endif %}>Civil</option>
+                                            <option value="mechanical" {% if form.category.value == 'mechanical' %} selected {% endif %}>Mechanical</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Job Type</label>
+                                            <select name="type" class="form-control here">" />
+                                            <option value="">Job Type</option>
+                                            <option value="accounting" {% if form.type.value == 'accounting'%} selected {% endif %}>Accounting/Finance</option>
+                                            <option value="computer" {% if form.type.value == 'computer'%} selected {% endif %}>Computer Sciences</option>
+                                            <option value="electrical" {% if form.type.value == 'electrical'%} selected {% endif %}>Electrical</option>
+                                            <option value="electronic" {% if form.type.value == 'electronic'%} selected {% endif %}>E&C</option>
+                                            <option value="civil" {% if form.type.value == 'civil'%} selected {% endif %}>Civil</option>
+                                            <option value="mechanical" {% if form.type.value == 'mechanical'%} selected {% endif %}>Mechanical</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label> Qualification</label>
+                                    <div class="form-group">
+                                        <select name="qualification" class="form-control here">" />
+                                            <option value="">Qualification</option>
+                                            <option value="matric" {% if form.qualification.value == 'matic' %} selected {% endif %}>Matriculation</option>
+                                            <option value="inter" {% if form.qualification.value == 'inter' %} selected {% endif %}>Intermediate</option>
+                                            <option value="grad" {% if form.qualification.value == 'grad' %} selected {% endif %}>Graduate</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Experience</label>
+                                            <select name="experience" class="form-control here">" />
+                                            <option value="">Experience</option>
+                                            <option value="1-2" {% if form.experience.value == '1-2' %} selected {% endif %}>1-2 year</option>
+                                            <option value="2-5" {% if form.experience.value == '2-5' %} selected {% endif %}>2-5 year</option>
+                                            <option value="5+" {% if form.experience.value == '5+' %} selected {% endif %}>5 year</option>
+
+
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Deadline</label>
+                                            <input id="deadline" name="deadline" class="form-control here" type="date" value="{{form.deadline.value}}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-info btn-fill">Create Job</button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

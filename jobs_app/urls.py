@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^dashboard/recruiter/$',views.dash_emp, name='dash'),
     url(r'^jobs/create/$', views.JobCreationView.as_view(), name='create-job'),
     url(r'^jobs/list/$', views.RecruiterManageJobsView.as_view(), name='recruiter-manage-jobs'),
+    url(r'^jobs/(?P<job_id>[0-9]+)/update/$', views.JobUpdateView.as_view(), name='job-update'),
+    url(r'^jobs/(?P<job_id>[0-9]+)/$', views.JobDetailView.as_view(), name='job-detail'),
 
     url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),

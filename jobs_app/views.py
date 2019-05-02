@@ -3,9 +3,10 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm
+from jobs_app.models import Job
 
 from jobs_app.forms import SignupForm, Signupformrec, LoginForm
 from jobs_app.models import intro, Signup, Signuprec
@@ -91,6 +92,7 @@ class LogoutView(View):
             auth_logout(request)
         return redirect('home')
 
+
 class JobCreationView(PermissionRequiredMixin, View):
 
     permission_required = ("can_create_job", )
@@ -108,6 +110,43 @@ class JobCreationView(PermissionRequiredMixin, View):
         return render(request, 'dash_emp/create_job.html', {
             'form': form,
         })
+
+class JobDetailView(View):
+
+    def get(self, request, job_id):
+        instance = get_object_or_404(Job, id=job_id)
+        return render(request, 'job_detail.html', {
+            'job': instance
+        })
+
+class JobUpdateView(PermissionRequiredMixin, View):
+
+    permission_required = ("can_create_job", )
+
+    def get(self, request, job_id):
+        instance = get_object_or_404(Job, id=job_id)
+        form = JobForm(instance=instance)
+        return render(request, 'dash_emp/update_job.html', {
+            'form': form,
+        })
+
+    def post(self, request, job_id):
+        instance = get_object_or_404(Job, id=job_id)
+        form = JobForm(request.POST)
+        if form.is_valid():
+            instance.title = form.cleaned_data.get('title')
+            instance.description = form.cleaned_data.get('description')
+            instance.category = form.cleaned_data.get('category')
+            instance.type = form.cleaned_data.get('type')
+            instance.qualification = form.cleaned_data.get('qualification')
+            instance.experience = form.cleaned_data.get('experience')
+            instance.deadline = form.cleaned_data.get('deadline')
+            instance.save()
+            return redirect('job-detail', job_id=job_id)
+        return render(request, 'dash_emp/update_job.html', {
+            'form': form,
+        })
+
 
 class RecruiterManageJobsView(PermissionRequiredMixin, View):
 
