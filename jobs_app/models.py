@@ -98,11 +98,13 @@ class JobApplication(models.Model):
         null=True,
         on_delete=models.SET_NULL
     )
-    sites = models.CharField(max_length=1024)
+    name = models.CharField(max_length=512)
+    cover_letter = models.TextField(max_length=5000)
+    sites = models.CharField(max_length=1024, null=True)
     email = models.EmailField()
-    skills = models.CharField(max_length=1024)
-    score = models.FloatField()
-    video_token = models.CharField(max_length=100)
+    skills = models.CharField(max_length=1024, null=True)
+    score = models.FloatField(default=0)
+    video_token = models.CharField(max_length=100, null=True)
     deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

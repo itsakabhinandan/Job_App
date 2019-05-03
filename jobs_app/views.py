@@ -1,12 +1,16 @@
+import datetime
+
+from django.conf import settings
+from django.http import JsonResponse
 from django.views import View
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 
 from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm
-from jobs_app.models import Job
+from jobs_app.models import Job, JobApplication, Resume
 
 from jobs_app.forms import SignupForm, Signupformrec, LoginForm
 from jobs_app.models import intro, Signup, Signuprec
@@ -161,6 +165,111 @@ class RecruiterManageJobsView(PermissionRequiredMixin, View):
             'jobs': jobs
         })
 
+class RelevantJobsView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        jobs = Job.objects.filter(
+            deadline__gte=datetime.datetime.now(),
+        )
+        return render(request, 'dash_can/relevant_jobs.html', {
+            'jobs': jobs
+        })
+
+class JobApplyView(LoginRequiredMixin, View):
+
+    def get(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        return render(request, 'dash_can/job_apply.html', {
+            'job': job,
+            'ziggeo_token': settings.ZIGGEO_TOKEN
+        })
+    
+    def post(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        data = request.POST
+        if data.get('form_type') == 'resume-upload':
+            form = ResumeForm(request.POST, request.FILES)
+            if form.is_valid():
+                resume = form.save()
+                resume_data = parse_resume(resume)
+                return render(request, 'dash_can/job_apply.html', {
+                    'job': job,
+                    'resume': resume,
+                    'ziggeo_token': settings.ZIGGEO_TOKEN,
+                    'resume_data': resume_data,
+                })
+            return render(request, 'dash_can/job_apply.html', {
+                'job': job,
+                'ziggeo_token': settings.ZIGGEO_TOKEN,
+                'resume_data': {}
+            })
+        
+        elif data.get('form_type') == 'apply':
+            # check data and save the application
+            try:
+                application = JobApplication.objects.get(
+                    user=request.user,
+                    job=job,
+                )
+                return JsonResponse({
+                    'message': 'Already applied to this job'
+                })
+            except JobApplication.DoesNotExist:
+                pass
+
+            required_fields = ['name', 'email', 'cover_letter']
+            if all(field in request.POST for field in required_fields):
+                resume = None
+                if request.POST.get('resume_id', None):
+                    resume = Resume.objects.get(
+                        id=int(request.POST.get('resume_id'))
+                    )
+                application = JobApplication.objects.create(
+                    user=request.user,
+                    job=job,
+                    resume=resume,
+                    name=request.POST.get('name'),
+                    email=request.POST.get('email'),
+                    cover_letter=request.POST.get('cover_letter'),
+                    sites=','.join(request.POST.getlist('sites[]', [])),
+                    skills=','.join(request.POST.getlist('skills[]', [])),
+                    score=0,
+                    video_token=request.POST.get('video_token', '')
+                )
+                return JsonResponse({
+                    'status': 'success',
+                    'job_id': job.id,
+                    'application_id': application.id,
+                })
+            return render(request, 'dash_can/job_apply.html', {
+                'job': job,
+                'ziggeo_token': settings.ZIGGEO_TOKEN,
+                'resume_data': {}
+            })
+        
+        return render(request, 'dash_can/job_apply.html', {
+            'job': job,
+            'ziggeo_token': settings.ZIGGEO_TOKEN,
+            'resume_data': {}
+        })
+
+
+class JobResumeUploadView(View):
+
+    def post(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        form = ResumeForm(request.POST, request.FILES)
+        if form.is_valid():
+            resume = form.save()
+            resume_data = parse_resume(resume)
+            return render(request, 'dash_can/job_apply.html', {
+                'job': job,
+                'resume_data': resume_data,
+            })
+        return render(request, 'upload/job_apply.html.html', {
+            'job': job,
+            'resume_data': {}
+        })
 
 def home(request):
     if request.method == 'POST':
@@ -190,26 +299,7 @@ def dash_emp(request):
     return render(request, "dash_emp/dashboard.html")
 
 
-class ResumeUploadView(View):
 
-    def get(self, request):
-        form = ResumeForm()
-        return render(request, 'upload/resume.html', {
-            'form': form
-        })
-
-    def post(self, request):
-        form = ResumeForm(request.POST, request.FILES)
-        if form.is_valid():
-            resume = form.save()
-            resume_data = parse_resume(resume)
-            return render(request, 'upload/resume.html', {
-                'form': form,
-                'resume_data': resume_data,
-            })
-        return render(request, 'upload/resume.html', {
-            'form': form
-        })
 
 class VideoView(View):
 
@@ -276,7 +366,7 @@ class CanWorkView(View):
 class CanApplyView(View):
 
     def get(self, request):
-        return render(request, 'dash_can/table.html')
+        return render(request, 'dash_can/relevant_jobs.html')
 
     def post(self, request):
         post_data = request.POST

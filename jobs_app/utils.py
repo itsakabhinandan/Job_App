@@ -2,6 +2,8 @@ import os
 import re
 import csv
 import sys
+import unicodedata
+import HTMLParser
 from cStringIO import StringIO
 from django.conf import settings
 
@@ -10,6 +12,12 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
+
+parser = HTMLParser.HTMLParser()
+
+
+def remove_control_characters(s):
+    return "".join(ch for ch in s if unicodedata.category(ch)[0]!="C")
 
 def convert(fname, pages=None):
     if not pages:
@@ -58,10 +66,12 @@ def parse_resume(resume):
     text = convert(path)
     name = extract_name(text).rstrip()
     text = text.lower().replace(',', '')
-    sites = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', text)
+    # sites = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', text)
+    sites = re.findall('https?://[^\s]+', text)
+    sites = [site.replace('\xc2\xa0', '') for site in sites]
     return {
         'name': name,
         'sites': sites,
-        'email': re.findall('\S+@\S+', text)[0],
+        'email': re.findall('\S+@\S+', text)[0].replace('\xc2\xa0', ''),
         'skills': extract_skills(skills_dict, text)
     }

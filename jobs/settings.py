@@ -123,3 +123,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'jobs_app/static')]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+ZIGGEO_TOKEN = '8cf4cb49773bee2142805c2352a510dc'

@@ -17,7 +17,11 @@ urlpatterns = [
     url(r'^jobs/(?P<job_id>[0-9]+)/update/$', views.JobUpdateView.as_view(), name='job-update'),
     url(r'^jobs/(?P<job_id>[0-9]+)/$', views.JobDetailView.as_view(), name='job-detail'),
 
-    url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
+    url(r'^jobs/list/relevant/$', views.RelevantJobsView.as_view(), name='relevant-jobs'),
+    url(r'^jobs/(?P<job_id>[0-9]+)/apply/$', views.JobApplyView.as_view(), name='job-apply'),
+    url(r'^jobs/(?P<job_id>[0-9]+)/resume/upload/$', views.JobResumeUploadView.as_view(), name='job-resume-upload'),
+
+    # url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),
 
     url(r'^menuemp/$',views.menu_emp, name='menu_emp'),

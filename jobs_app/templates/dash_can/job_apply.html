@@ -1,0 +1,120 @@
+{% extends 'dash_can/base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="//assets.ziggeo.com/v1-stable/ziggeo.css" />
+<script src="//assets.ziggeo.com/v1-stable/ziggeo.js"></script>
+<script>ZiggeoApi.token = "{{ziggeo_token}}";</script>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Resume</h4>
+                    </div>
+                    <div class="content">
+                        <form id="resumeForm" method="post" enctype="multipart/form-data" action="{% url 'job-apply' job.id %}">
+                            {% csrf_token %}
+                            <input name="form_type" value="resume-upload" hidden>
+                            <div class="custom-file">
+                                <input type="file" name="resume" class="custom-file-input" accept="application/pdf" required>
+                            </div>
+                            <div style="display:flex; margin: 0.5em auto">
+                                <button type="submit" style="margin-left:auto; margin-right:auto" class="btn btn-info btn-fill btn-sm">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form id="applyForm" method="POST" action="{% url 'job-apply' job.id %}">
+            {% csrf_token %}
+            <input name="form_type" value="apply" hidden>
+            <input name="resume_id" value="{{resume.id}}" hidden>
+        </form>
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <div class="col">
+                        <p align="center" style="padding: 0 0.5em">Upload your resume to populate these fields</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6 form-group">
+                        <label>Name</label>
+                        <input form="applyForm" class="form-control" type="text" value="{{resume_data.name}}" name="name" required>
+                    </div>
+                    <div class="col col-md-6 form-group">
+                        <label>Email</label>
+                        <input form="applyForm" class="form-control" type="text" value="{{resume_data.email}}" name="email" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <label>Skills</label>
+                        <div><small>Click to remove a skill</small></div>
+                        {% for skill in resume_data.skills %}
+                            <span class="skill-badge badge badge-primary" style="cursor: pointer">{{skill}}</span>
+                            <input form="applyForm" hidden name="skills[]" value="{{ skill }}">
+                        {% endfor %}
+                        {% if not resume_data.skills %}
+                            <small>No skills found on resume.</small>
+                        {% endif %}
+                    </div>
+                    <div class="col col-md-6">
+                        <label>Sites</label>
+                        <div><small>Click to remove a skill</small></div>
+                        {% for site in resume_data.sites %}
+                            <span class="skill-badge badge badge-primary" style="cursor: pointer">{{site}}</span>
+                            <input form="applyForm" hidden name="sites[]" value="{{site}}">
+                        {% endfor %}
+                        {% if not resume_data.sites %}
+                            <small>No sites found on resume.</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Cover Letter</label>
+                            <textarea form="applyForm" name="cover_letter" maxlength="5000" style="resize: none;" rows="5" class="form-control" placeholder="Tell us why you are a good fit for this job?" required></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <div class="col">
+                        <ziggeo ziggeo-limit=120></ziggeo>
+                        <input form="applyForm" hidden id="video-token" name="video_token">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex; margin: 0.5em auto">
+            <button form="applyForm" type="submit" style="margin-left:auto; margin-right:auto" class="btn btn-primary btn-fill">Apply</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('.skill-badge').click(function() {
+        $(this).remove();
+    })
+
+    ZiggeoApi.Events.on("submitted", function (data) {
+        $('#video-token').val(data.video.token)
+    });
+</script>
+{% endblock %}
