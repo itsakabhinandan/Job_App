@@ -54,14 +54,17 @@
                 <div class="row">
                     <div class="col col-md-6">
                         <label>Skills</label>
+                        <input id="skillInput" type="text" class="form-control" placeholder="skill">
                         <div><small>Click to remove a skill</small></div>
-                        {% for skill in resume_data.skills %}
-                            <span class="skill-badge badge badge-primary" style="cursor: pointer">{{skill}}</span>
-                            <input form="applyForm" hidden name="skills[]" value="{{ skill }}">
-                        {% endfor %}
-                        {% if not resume_data.skills %}
-                            <small>No skills found on resume.</small>
-                        {% endif %}
+                        <div class="row">
+                            <div id="skillsList" class="col-md-6">
+                                {% for skill in resume_data.skills %}
+                                    <div class="skill-badge badge badge-primary" style="cursor: pointer">{{skill}}
+                                    <input form="applyForm" hidden name="skills[]" value="{{ skill }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                     <div class="col col-md-6">
                         <label>Sites</label>
@@ -109,6 +112,24 @@
 
 {% block scripts %}
 <script>
+    $('#skillInput').keypress(function(event){
+        if(event.which == 13 || event.keyCode == 13) {
+            var skill = $(this).val()
+            if(skill) {
+            $('#skillsList').append(
+                
+                '<div class="skill-badge badge badge-primary" style="cursor: pointer">'+skill+'<input hidden name="skills[]" value="' + skill + '"></div>'
+            )
+            $('.skill-badge').click(function() {
+                $(this).remove();
+            })
+            }
+            $(this).val('')
+            event.preventDefault();
+            return false;
+        }
+    })
+
     $('.skill-badge').click(function() {
         $(this).remove();
     })

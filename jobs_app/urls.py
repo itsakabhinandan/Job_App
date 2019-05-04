@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
@@ -10,7 +11,7 @@ urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^login/$', views.LoginView.as_view(), name='login'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
-    url(r'^dashboard/$', views.can_dash, name='can_dash'),
+    url(r'^dashboard/$', views.MyApplicationsView.as_view(), name='can_dash'),
     url(r'^dashboard/recruiter/$',views.dash_emp, name='dash'),
     url(r'^jobs/create/$', views.JobCreationView.as_view(), name='create-job'),
     url(r'^jobs/list/$', views.RecruiterManageJobsView.as_view(), name='recruiter-manage-jobs'),
@@ -20,6 +21,7 @@ urlpatterns = [
     url(r'^jobs/list/relevant/$', views.RelevantJobsView.as_view(), name='relevant-jobs'),
     url(r'^jobs/(?P<job_id>[0-9]+)/apply/$', views.JobApplyView.as_view(), name='job-apply'),
     url(r'^jobs/(?P<job_id>[0-9]+)/resume/upload/$', views.JobResumeUploadView.as_view(), name='job-resume-upload'),
+    url(r'^profile/$', views.CandidateProfileView.as_view(), name='profile'),
 
     # url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),

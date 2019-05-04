@@ -108,3 +108,41 @@ class JobApplication(models.Model):
     deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class CandidateProfile(models.Model):
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE
+    )
+    resume = models.ForeignKey(
+        Resume,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    name = models.CharField(max_length=512)
+    sites = models.CharField(max_length=5000, null=True)
+    skills = models.CharField(max_length=1204, null=True)
+    gender = models.CharField(max_length=10, null=True)
+    address = models.CharField(max_length=256, null=True)
+    city = models.CharField(max_length=100, null=True)
+    country = models.CharField(max_length=100, null=True)
+    postal_code = models.CharField(max_length=100, null=True)
+    phone = models.CharField(max_length=26, null=True)
+    about = models.TextField(null=True)
+
+@receiver(post_save, sender=get_user_model())
+def create_candidate_profile(sender, instance, created, **kwargs):
+    if created:
+        CandidateProfile.objects.create(
+            user=instance,
+            name='{first} {last}'.format(first=instance.first_name, last=instance.last_name)
+        )
+
+class Experience(models.Model):
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE
+    )
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    

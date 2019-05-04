@@ -254,6 +254,44 @@ class JobApplyView(LoginRequiredMixin, View):
         })
 
 
+class MyApplicationsView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        job_applications = request.user.jobapplication_set.all()
+        return render(request, 'dash_can/my_applications.html', {
+            'job_applications': job_applications,
+        })
+
+
+class CandidateProfileView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'dash_can/profile.html', {
+            'skills': request.user.candidateprofile.skills.split(',')
+        })
+    
+    def post(self, request):
+        data = request.POST
+        request.user.first_name = data.get('first_name', '')
+        request.user.last_name = data.get('last_name', '')
+        request.user.candidateprofile.name = '{0} {1}'.format(data.get('first_name', ''), data.get('last_name', ''))
+        request.user.candidateprofile.gender = data.get('gender', '')
+        request.user.candidateprofile.address = data.get('address', '')
+        request.user.candidateprofile.city = data.get('city', '')
+        request.user.candidateprofile.country = data.get('country', '')
+        request.user.candidateprofile.phone = data.get('phone', '')
+        request.user.candidateprofile.postal_code = data.get('postal_code', '')
+        request.user.candidateprofile.about = data.get('about', '')
+
+        request.user.candidateprofile.skills = ','.join(data.getlist("skills[]", []))
+
+        request.user.save()
+        request.user.candidateprofile.save()
+
+        return render(request, 'dash_can/profile.html', {
+            'skills': request.user.candidateprofile.skills.split(',')
+        })
+
 class JobResumeUploadView(View):
 
     def post(self, request, job_id):

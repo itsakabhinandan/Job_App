@@ -1,0 +1,154 @@
+{% extends 'dash_can/base.html' %}
+
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">My Profile</h4>
+                    </div>
+                    <div class="content">
+                        <form method="POST">{% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Email address</label>
+                                        <input name="email" type="email" class="form-control" placeholder="Email" value="{{user.email}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>First Name</label>
+                                        <input name="first_name" type="text" class="form-control" placeholder="Company" value="{{user.first_name}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Last Name</label>
+                                        <input name="last_name" type="text" class="form-control" placeholder="Last Name" value="{{user.last_name}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gender</label>
+                                        <input name="gender" type="text" class="form-control" placeholder="Gender" value="{{user.candidateprofile.gender}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Skills</label>
+                                        <input id="skillInput" type="text" class="form-control" placeholder="skill">
+                                        <div class="row">
+                                            <div id="skillsList" class="col-md-12">
+                                                <div><small>Click to remove a skill</small></div>
+                                                {% if skills %}
+                                                {% for skill in skills %}
+                                                <div class="skill-badge badge badge-primary" style="cursor: pointer">{{skill}}
+                                                    <input hidden name="skills[]" value="{{ skill }}">
+                                                </div>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Address</label>
+                                        <input name="address" type="text" class="form-control" placeholder="Home Address" value="{{user.candidateprofile.address}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <input name="city" type="text" class="form-control" placeholder="City" value="{{user.candidateprofile.city}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Country</label>
+                                        <input name="country" type="text" class="form-control" placeholder="Country" value="{{user.candidateprofile.country}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Postal Code</label>
+                                        <input name="postal_code" type="text" class="form-control" placeholder="ZIP Code" value="{{user.candidateprofile.postal_code}}">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Phone No.</label>
+                                        <input name="phone" type="text" class="form-control" placeholder="Phone number" value="{{user.candidateprofile.phone}}">
+                                    </div>
+                                </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>About Me</label>
+                                        <textarea style="resize: none" name="about" maxlength="4999" rows="5" class="form-control" placeholder="Tell about yourself">{{user.candidateprofile.about}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+            <button type="submit" class="btn btn-info btn-fill pull-right">Update Profile</button>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#skillInput').keypress(function(event){
+        if(event.which == 13 || event.keyCode == 13) {
+            var skill = $(this).val()
+            if(skill) {
+            $('#skillsList').append(
+                
+                '<div class="skill-badge badge badge-primary" style="cursor: pointer">'+skill+'<input hidden name="skills[]" value="' + skill + '"></div>'
+            )
+            $('.skill-badge').click(function() {
+                $(this).remove();
+            })
+            }
+            $(this).val('')
+            event.preventDefault();
+            return false;
+        }
+    })
+
+    $('.skill-badge').click(function() {
+        $(this).remove();
+    })
+
+    
+</script>
+
+{% endblock %}
