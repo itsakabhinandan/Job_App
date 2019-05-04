@@ -22,23 +22,10 @@ urlpatterns = [
     url(r'^jobs/(?P<job_id>[0-9]+)/apply/$', views.JobApplyView.as_view(), name='job-apply'),
     url(r'^jobs/(?P<job_id>[0-9]+)/resume/upload/$', views.JobResumeUploadView.as_view(), name='job-resume-upload'),
     url(r'^profile/$', views.CandidateProfileView.as_view(), name='profile'),
+    path('experience/', views.ExperienceView.as_view(), name='experience'),
+    path('experience/<int:exp_id>/delete', views.DeleteExperienceView.as_view(), name='delete-experience'),
 
     # url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),
-
-    url(r'^menuemp/$',views.menu_emp, name='menu_emp'),
-    url(r'^user/$', views.UserView.as_view(), name='user'),
-
-
-    url(r'^CanUserView/$', views.CanUserView.as_view(), name='CanUserView'),
-    url(r'^CanEduView/$', views.CanEduView.as_view(), name='CanEduView'),
-    url(r'^CanWorkView/$', views.CanWorkView.as_view(), name='CanWorkView'),
-    url(r'^CanApplyView/$', views.CanApplyView.as_view(), name='CanApplyView'),
-
-    #url(r'^agent-sign-up/', views.AgentSignUp.as_view(), name='agent-sign-up'),
-    #url(r'^candidate-sign-up/', views.CandidateSignUp.as_view(), name='candidate-sign-up'),
-
-
-
 
 ]

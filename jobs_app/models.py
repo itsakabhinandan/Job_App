@@ -139,7 +139,7 @@ def create_candidate_profile(sender, instance, created, **kwargs):
         )
 
 class Experience(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE
     )

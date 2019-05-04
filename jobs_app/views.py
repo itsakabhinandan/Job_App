@@ -1,7 +1,7 @@
 import datetime
 
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views import View
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import UserCreationForm
@@ -9,8 +9,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 
-from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm
-from jobs_app.models import Job, JobApplication, Resume
+from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm, ExperienceForm
+from jobs_app.models import Job, JobApplication, Resume, Experience
 
 from jobs_app.forms import SignupForm, Signupformrec, LoginForm
 from jobs_app.models import intro, Signup, Signuprec
@@ -291,6 +291,33 @@ class CandidateProfileView(LoginRequiredMixin, View):
         return render(request, 'dash_can/profile.html', {
             'skills': request.user.candidateprofile.skills.split(',')
         })
+
+
+class ExperienceView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'dash_can/work_details.html')
+
+    def post(self, request):
+        form = ExperienceForm(request.POST)
+        if form.is_valid():
+            experience = form.save(commit=False)
+            experience.user = request.user
+            experience.save()
+            return render(request, 'dash_can/work_details.html')
+        print(form)
+        return render(request, 'dash_can/work_details.html')
+
+
+class DeleteExperienceView(LoginRequiredMixin, View):
+
+    def get(self, request, exp_id):
+        try:
+            exp = request.user.experience_set.get(id=exp_id)
+            exp.delete()
+            return redirect('experience')
+        except Experience.DoesNotExist:
+            raise Http404()
 
 class JobResumeUploadView(View):
 

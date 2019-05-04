@@ -1,0 +1,66 @@
+{% extends 'dash_can/base.html' %}
+
+{% block content %}
+<div class="content">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="header">
+                    <h4 class="title">Add Experience & Projects</h4>
+                </div>
+                <div class="content">
+                    <form method="POST">{% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <input class="form-control" type="text" name="title" placeholder="Project or Position Title">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea name="description" style="resize: none" rows="3" class="form-control" placeholder="Project or Position Description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info btn-fill pull-right">Add Experience</button>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="header">
+                    <h4 class="title">Experience</h4>
+                </div>
+                <div class="content">
+                    {% for experience in user.experience_set.all %}
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label>{{experience.title}}</label>
+                                <div>{{experience.description}}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{% url 'delete-experience' experience.id %}" class="btn btn-danger btn-fill btn-sm pull-right"><i class="fa fa-trash-o"></i></i></a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
