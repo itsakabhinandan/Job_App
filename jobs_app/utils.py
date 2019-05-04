@@ -2,10 +2,9 @@ import os
 import re
 import csv
 import sys
-import unicodedata
-import HTMLParser
-from cStringIO import StringIO
+from io import StringIO
 from django.conf import settings
+from importlib import reload
 
 import spacy
 from pdfminer.converter import TextConverter
@@ -13,7 +12,6 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 
-parser = HTMLParser.HTMLParser()
 
 
 def remove_control_characters(s):
@@ -28,7 +26,7 @@ def convert(fname, pages=None):
     manager = PDFResourceManager()
     converter = TextConverter(manager, output, laparams=LAParams())
     interpreter = PDFPageInterpreter(manager, converter)
-    infile = file(fname, 'rb')
+    infile = open(fname, 'rb')
     for page in PDFPage.get_pages(infile, pagenums):
         interpreter.process_page(page)
     infile.close()
@@ -39,9 +37,8 @@ def convert(fname, pages=None):
 
 def extract_name(text):
     reload(sys)
-    sys.setdefaultencoding('utf8')
     nlp = spacy.load('xx_ent_wiki_sm')
-    doc = nlp(unicode(text))
+    doc = nlp(text)
     for ent in doc.ents:
         if ent.label_ == 'PER':
             return ent.text

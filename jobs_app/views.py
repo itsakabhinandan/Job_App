@@ -63,7 +63,7 @@ class RecruiterSignUpView(View):
 class LoginView(View):
 
     def get(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             if request.user.has_perm("can_access_recruiter_dashboard"):
                 return redirect("dash")
             return redirect("can_dash")
@@ -92,7 +92,7 @@ class LoginView(View):
 class LogoutView(View):
 
     def get(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             auth_logout(request)
         return redirect('home')
 
@@ -154,7 +154,7 @@ class JobUpdateView(PermissionRequiredMixin, View):
 
 class RecruiterManageJobsView(PermissionRequiredMixin, View):
 
-    permission_required = ("can_post_job", )
+    permission_required = ("can_create_job", )
 
     def get(self, request):
         jobs = request.user.job_set.all()

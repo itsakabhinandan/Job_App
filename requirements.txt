@@ -1,3 +1,4 @@
 django
-pdfminer
+pdfminer.six
 spacy
+ziggeo
