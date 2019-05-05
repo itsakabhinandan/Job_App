@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^profile/$', views.CandidateProfileView.as_view(), name='profile'),
     path('experience/', views.ExperienceView.as_view(), name='experience'),
     path('experience/<int:exp_id>/delete', views.DeleteExperienceView.as_view(), name='delete-experience'),
+    path('education/', views.EducationView.as_view(), name='education'),
+    path('education/<int:edu_id>/delete', views.DeleteEducationView.as_view(), name='delete-education'),
 
     # url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),

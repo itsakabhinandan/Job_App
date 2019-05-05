@@ -66,6 +66,13 @@
                     </a>
                 </li>
 
+                <li {% if request.resolver_match.url_name == 'education' %} class="active" {% endif %}>
+                    <a href="{% url 'education' %}">
+                        <i class="pe-7s-user"></i>
+                        <p>Education</p>
+                    </a>
+                </li>
+
                 <li {% if request.resolver_match.url_name == 'experience' %} class="active" {% endif %}>
                     <a href="{% url 'experience' %}">
                         <i class="pe-7s-science"></i>

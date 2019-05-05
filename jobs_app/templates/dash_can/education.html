@@ -12,18 +12,23 @@
                 <div class="content">
                     <form method="POST">{% csrf_token %}
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Title</label>
-                                    <input class="form-control" type="text" name="title" placeholder="Project or Position Title" required>
+                                    <label>level</label>
+                                    <select name="level" class="form-control" required>
+                                        <option value="">-------Select------</option>
+                                        <option value="1">Matriculate</option>
+                                        <option value="2">Intermediate</option>
+                                        <option value="3">Graduation</option>
+                                        <option value="4">Post-Graduation</option>
+                                        <option value="5">PHD</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea name="description" style="resize: none" rows="3" class="form-control" placeholder="Project or Position Description" required></textarea>
+                                    <label>College / University</label>
+                                    <input type="text" class="form-control" placeholder="Collage/University" name="college" required>
                                 </div>
                             </div>
                         </div>
@@ -31,14 +36,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Starting Date</label>
-                                    <input type="date" class="form-control" name="start_date" required>
+                                    <label>Percentage obtained</label>
+                                    <input type="number" class="form-control" name="percent" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Ending Date (Empty for ongoing)</label>
-                                    <input type="date" class="form-control" name="end_date">
+                                    <label>Complition Date</label>
+                                    <input type="date" class="form-control" name="completion_date" required>
                                 </div>
                             </div>
                         </div>
@@ -58,17 +63,17 @@
                     <h4 class="title">Experience</h4>
                 </div>
                 <div class="content">
-                    {% for experience in user.experience_set.all %}
+                    {% for education in user.education_set.all %}
                     <div class="row">
                         <div class="col-md-10">
                             <div class="form-group">
-                                <label>{{experience.title}}</label>
-                                <div>{{experience.description}}</div>
-                                <div>{{experience.experience_years}} years experience</div>
+                                <label>{{education.get_level_display}} - {{education.college}}</label>
+                                <div>{{education.percent}}% (approx)</div>
+                                <div>{{education.completion_date}}</div>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <a href="{% url 'delete-experience' experience.id %}" class="btn btn-danger btn-fill btn-sm pull-right"><i class="fa fa-trash-o"></i></i></a>
+                            <a href="{% url 'delete-education' education.id %}" class="btn btn-danger btn-fill btn-sm pull-right"><i class="fa fa-trash-o"></i></i></a>
                         </div>
                     </div>
                     {% endfor %}

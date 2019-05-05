@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -145,4 +146,31 @@ class Experience(models.Model):
     )
     title = models.CharField(max_length=256)
     description = models.TextField()
-    
+    start_date = models.DateField()
+    end_date = models.DateField(null=True)
+
+    @property
+    def experience_years(self):
+        if self.end_date:
+            return int((self.end_date - self.start_date).days/365)
+        else:
+            return int((datetime.date.today() - self.start_date).days/365)
+
+
+class Education(models.Model):
+    EDUCATION_LEVEL_CHOICES = (
+        (1, 'Matriculate'),
+        (2, 'Intermediate'),
+        (3, 'Graduation'),
+        (4, 'Post-Graduation'),
+        (5, 'PHD')
+        )
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE
+    )
+    level = models.IntegerField(choices=EDUCATION_LEVEL_CHOICES)
+    college = models.CharField(max_length=256)
+    percent = models.IntegerField()
+    completion_date = models.DateField()
+    created_on = models.DateTimeField(auto_now_add=True)

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from jobs_app.models import Signup, Signuprec, Resume, Job, Experience
+from jobs_app.models import Signup, Signuprec, Resume, Job, Experience, Education
 
 
 class RecruiterCreationForm(UserCreationForm):
@@ -21,9 +21,17 @@ class JobForm(forms.ModelForm):
 
 class ExperienceForm(forms.ModelForm):
 
+    end_date = forms.DateField(required=False)
+
     class Meta:
         model = Experience
-        fields = ('title', 'description')
+        fields = ('title', 'description', 'start_date', 'end_date')
+
+class EducationForm(forms.ModelForm):
+
+    class Meta:
+        model = Education
+        fields = ('level', 'college', 'percent', 'completion_date')
 
 
 class SignupForm(forms.ModelForm):

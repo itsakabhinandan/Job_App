@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 
-from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm, ExperienceForm
+from jobs_app.forms import ResumeForm, RecruiterCreationForm, JobForm, ExperienceForm, EducationForm
 from jobs_app.models import Job, JobApplication, Resume, Experience
 
 from jobs_app.forms import SignupForm, Signupformrec, LoginForm
@@ -319,6 +319,31 @@ class DeleteExperienceView(LoginRequiredMixin, View):
         except Experience.DoesNotExist:
             raise Http404()
 
+class EducationView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'dash_can/education.html')
+    
+    def post(self, request):
+        form = EducationForm(request.POST)
+        if form.is_valid():
+            education = form.save(commit=False)
+            education.user = request.user
+            education.save()
+            return render(request, 'dash_can/education.html')
+        return render(request, 'dash_can/education.html')
+
+class DeleteEducationView(LoginRequiredMixin, View):
+
+    def get(self, request, edu_id):
+        try:
+            exp = request.user.education_set.get(id=edu_id)
+            exp.delete()
+            return redirect('education')
+        except Experience.DoesNotExist:
+            raise Http404()
+
+
 class JobResumeUploadView(View):
 
     def post(self, request, job_id):
@@ -417,23 +442,3 @@ class CanEduView(View):
         post_data = request.POST
         print(post_data)
         return render(request, 'dash_can/typography.html')
-
-class CanWorkView(View):
-
-    def get(self, request):
-        return render(request, 'dash_can/icons.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_can/icons.html')
-
-class CanApplyView(View):
-
-    def get(self, request):
-        return render(request, 'dash_can/relevant_jobs.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_can/table.html')
