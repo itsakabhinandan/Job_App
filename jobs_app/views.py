@@ -17,6 +17,7 @@ from jobs_app.models import intro, Signup, Signuprec
 
 from jobs_app.utils import parse_resume
 from jobs_app.scoring import get_score_for_user_application
+from jobs_app.update_profile import update_candidate_profile
 
 
 class UserSignUpView(View):
@@ -212,9 +213,7 @@ class JobApplyView(LoginRequiredMixin, View):
                     user=request.user,
                     job=job,
                 )
-                return JsonResponse({
-                    'message': 'Already applied to this job'
-                })
+                return redirect('can_dash')
             except JobApplication.DoesNotExist:
                 pass
 
@@ -239,11 +238,8 @@ class JobApplyView(LoginRequiredMixin, View):
                 score = get_score_for_user_application(request.user, application)
                 application.score = score
                 application.save()
-                return JsonResponse({
-                    'status': 'success',
-                    'job_id': job.id,
-                    'application_id': application.id,
-                })
+                update_candidate_profile(request.user, application)
+                return redirect('profile')
             return render(request, 'dash_can/job_apply.html', {
                 'job': job,
                 'ziggeo_token': settings.ZIGGEO_TOKEN,
@@ -269,8 +265,11 @@ class MyApplicationsView(LoginRequiredMixin, View):
 class CandidateProfileView(LoginRequiredMixin, View):
 
     def get(self, request):
+        skills = []
+        if request.user.candidateprofile.skills:
+            skills = request.user.candidateprofile.skills.split(',')
         return render(request, 'dash_can/profile.html', {
-            'skills': request.user.candidateprofile.skills.split(',')
+            'skills': skills
         })
     
     def post(self, request):
@@ -291,8 +290,12 @@ class CandidateProfileView(LoginRequiredMixin, View):
         request.user.save()
         request.user.candidateprofile.save()
 
+        skills = []
+        if request.user.candidateprofile.skills:
+            skills = request.user.candidateprofile.skills.split(',')
+
         return render(request, 'dash_can/profile.html', {
-            'skills': request.user.candidateprofile.skills.split(',')
+            'skills': skills
         })
 
 
@@ -372,6 +375,9 @@ class ApplicationView(PermissionRequiredMixin, LoginRequiredMixin, View):
 
 
 class JobResumeUploadView(View):
+    """
+    This view is not in use
+    """
 
     def post(self, request, job_id):
         job = get_object_or_404(Job, id=job_id)
@@ -404,68 +410,12 @@ def home(request):
 
         return render(request, 'jobs_app/index.html')
 
-def menu_emp(request):
-    return render(request, "menu_emp/menu_emp.html")
-
-
-def menu_can(request):
-    return render(request, "menu_can/menu_can.html")
-
-
-def dash_emp(request):
-    return render(request, "dash_emp/dashboard.html")
-
-
-
-
-class VideoView(View):
-
-    def get(self, request):
-        return render(request, 'video/base.html')
-
-class UserView(View):
-
-    def get(self, request):
-        return render(request, 'dash_emp/user.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_emp/user.html')
-
-
-class DashView(View):
-
-    def get(self, request):
-        return render(request, 'dash_emp/dashboard.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_emp/dashboard.html')
-
-
 def can_dash(request):
     return render(request, "dash_can/dashboard.html")
 
+class RecruiterDashboard(PermissionRequiredMixin, LoginRequiredMixin, View):
 
-class CanUserView(View):
-
-    def get(self, request):
-        return render(request, 'dash_can/user.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_can/user.html')
-
-
-class CanEduView(View):
+    permission_required = ('can_access_recruiter_dashboard', )
 
     def get(self, request):
-        return render(request, 'dash_can/typography.html')
-
-    def post(self, request):
-        post_data = request.POST
-        print(post_data)
-        return render(request, 'dash_can/typography.html')
+        return render(request, 'dash_emp/dashboard.html')

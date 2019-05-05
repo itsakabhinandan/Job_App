@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^login/$', views.LoginView.as_view(), name='login'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^dashboard/$', views.MyApplicationsView.as_view(), name='can_dash'),
-    url(r'^dashboard/recruiter/$',views.dash_emp, name='dash'),
+    url(r'^dashboard/recruiter/$',views.RecruiterDashboard.as_view(), name='dash'),
     url(r'^jobs/create/$', views.JobCreationView.as_view(), name='create-job'),
     url(r'^jobs/list/$', views.RecruiterManageJobsView.as_view(), name='recruiter-manage-jobs'),
     url(r'^jobs/(?P<job_id>[0-9]+)/update/$', views.JobUpdateView.as_view(), name='job-update'),
@@ -28,8 +28,5 @@ urlpatterns = [
     path('education/<int:edu_id>/delete', views.DeleteEducationView.as_view(), name='delete-education'),
     path('jobs/<int:job_id>/applications/', views.ListApplicationsView.as_view(), name='list-applications'),
     path('jobs/<int:job_id>/applications/<int:app_id>/', views.ApplicationView.as_view(), name='application'),
-
-    # url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
-    url(r'^video/$', views.VideoView.as_view(), name="video"),
 
 ]

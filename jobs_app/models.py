@@ -121,22 +121,22 @@ class CandidateProfile(models.Model):
         on_delete=models.SET_NULL
     )
     name = models.CharField(max_length=512)
-    sites = models.CharField(max_length=5000, null=True)
-    skills = models.CharField(max_length=1204, null=True)
-    gender = models.CharField(max_length=10, null=True)
-    address = models.CharField(max_length=256, null=True)
-    city = models.CharField(max_length=100, null=True)
-    country = models.CharField(max_length=100, null=True)
-    postal_code = models.CharField(max_length=100, null=True)
-    phone = models.CharField(max_length=26, null=True)
-    about = models.TextField(null=True)
+    sites = models.CharField(max_length=5000, null=True, default='')
+    skills = models.CharField(max_length=1204, null=True, default='')
+    gender = models.CharField(max_length=10, null=True, default='')
+    address = models.CharField(max_length=256, null=True, default='')
+    city = models.CharField(max_length=100, null=True, default='')
+    country = models.CharField(max_length=100, null=True, default='')
+    postal_code = models.CharField(max_length=100, null=True, default='')
+    phone = models.CharField(max_length=26, null=True, default='')
+    about = models.TextField(null=True, default='')
 
 @receiver(post_save, sender=get_user_model())
 def create_candidate_profile(sender, instance, created, **kwargs):
     if created:
         CandidateProfile.objects.create(
             user=instance,
-            name='{first} {last}'.format(first=instance.first_name, last=instance.last_name)
+            name='{first} {last}'.format(first=instance.first_name, last=instance.last_name),
         )
 
 class Experience(models.Model):
