@@ -16,6 +16,7 @@ from jobs_app.forms import SignupForm, Signupformrec, LoginForm
 from jobs_app.models import intro, Signup, Signuprec
 
 from jobs_app.utils import parse_resume
+from jobs_app.scoring import get_score_for_user_application
 
 
 class UserSignUpView(View):
@@ -224,7 +225,7 @@ class JobApplyView(LoginRequiredMixin, View):
                     resume = Resume.objects.get(
                         id=int(request.POST.get('resume_id'))
                     )
-                application = JobApplication.objects.create(
+                application = JobApplication(
                     user=request.user,
                     job=job,
                     resume=resume,
@@ -233,9 +234,11 @@ class JobApplyView(LoginRequiredMixin, View):
                     cover_letter=request.POST.get('cover_letter'),
                     sites=','.join(request.POST.getlist('sites[]', [])),
                     skills=','.join(request.POST.getlist('skills[]', [])),
-                    score=0,
                     video_token=request.POST.get('video_token', '')
                 )
+                score = get_score_for_user_application(request.user, application)
+                application.score = score
+                application.save()
                 return JsonResponse({
                     'status': 'success',
                     'job_id': job.id,
