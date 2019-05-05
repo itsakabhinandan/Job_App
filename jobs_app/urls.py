@@ -26,6 +26,8 @@ urlpatterns = [
     path('experience/<int:exp_id>/delete', views.DeleteExperienceView.as_view(), name='delete-experience'),
     path('education/', views.EducationView.as_view(), name='education'),
     path('education/<int:edu_id>/delete', views.DeleteEducationView.as_view(), name='delete-education'),
+    path('jobs/<int:job_id>/applications/', views.ListApplicationsView.as_view(), name='list-applications'),
+    path('jobs/<int:job_id>/applications/<int:app_id>/', views.ApplicationView.as_view(), name='application'),
 
     # url(r'^upload/resume/$', views.ResumeUploadView.as_view(), name="resume-upload"),
     url(r'^video/$', views.VideoView.as_view(), name="video"),

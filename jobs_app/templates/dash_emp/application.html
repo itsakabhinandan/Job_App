@@ -1,0 +1,84 @@
+{% extends 'dash_emp/base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="//assets.ziggeo.com/v1-stable/ziggeo.css" />
+<script src="//assets.ziggeo.com/v1-stable/ziggeo.js"></script>
+<script>ZiggeoApi.token = "{{ziggeo_token}}";</script>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <div class="col">
+                        <p align="center" style="padding: 0 0.5em">Applicant Details</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6 form-group">
+                        <label>Name</label>
+                        <div>{{application.name}}</div>
+                    </div>
+                    <div class="col col-md-6 form-group">
+                        <label>Email</label>
+                        <div>{{application.email}}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-6">
+                        <label>Skills</label>
+                        <div class="row">
+                            <div id="skillsList" class="col-md-6">
+                                {% for skill in skills %}
+                                    <div class="skill-badge badge badge-primary" style="cursor: pointer">{{skill}}
+                                    <input form="applyForm" hidden name="skills[]" value="{{ skill }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <label>Sites</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% for site in sites %}
+                                <span class="skill-badge badge badge-primary" style="cursor: pointer">{{site}}</span>
+                                <input form="applyForm" hidden name="sites[]" value="{{site}}">
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Cover Letter</label>
+                            <div>{{application.cover_letter}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if application.video_token %}
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Applicant Video</label>
+                        <div>
+                            <ziggeo ziggeo-video="{{application.video_token}}"></ziggeo>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

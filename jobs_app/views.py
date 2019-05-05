@@ -346,6 +346,30 @@ class DeleteEducationView(LoginRequiredMixin, View):
         except Experience.DoesNotExist:
             raise Http404()
 
+class ListApplicationsView(PermissionRequiredMixin, LoginRequiredMixin, View):
+
+    permission_required = ('can_access_recruiter_dashboard', )
+
+    def get(self, request, job_id):
+        job = get_object_or_404(Job, id=job_id)
+        applications = job.jobapplication_set.all().order_by('-score')
+        return render(request, 'dash_emp/list_application.html', {
+            'applications': applications
+        })
+
+class ApplicationView(PermissionRequiredMixin, LoginRequiredMixin, View):
+
+    permission_required = ('can_access_recruiter_dashboard', )
+
+    def get(self, request, job_id, app_id):
+        application = get_object_or_404(JobApplication, id=app_id)
+        return render(request, 'dash_emp/application.html', {
+            'application': application,
+            'ziggeo_token': settings.ZIGGEO_TOKEN,
+            'skills': application.skills.split(','),
+            'sites': application.sites.split(','),
+        })
+
 
 class JobResumeUploadView(View):
 

@@ -13,24 +13,19 @@
                     <div class="content table-responsive table-full-width">
                         <table class="table table-hover table-striped">
                             <thead>
-                                <th>Job Title</th>
-                                <th>Deadline</th>
-                                <th>Applications</th>
-                                <th>Status</th>
+                                <th>Applicant Name</th>
+                                <th>Score</th>
+                                <th>Applied On</th>
                                 <th></th>
                             </thead>
                             <tbody>
-                                {% for job in jobs %}
+                                {% for application in applications %}
                                 <tr>
-                                    <td>{{job.title}}</td>
-                                    <td>{{job.deadline}}</td>
-                                    <td>{{job.jobapplication_set.count}}</td>
-                                    <td>{% if job.deleted %}Closed{% else %}Open{% endif %}</td>
+                                    <td>{{application.name}}</td>
+                                    <td>{{application.score}}</td>
+                                    <td>{{application.created_at}}</td>
                                     <td>
-                                        <a href="{% url 'job-update' job.id %}" class="btn btn-info btn-sm btn-fill">Edit</a>
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'list-applications' job.id %}" class="btn btn-info btn-sm btn-fill">List</a>
+                                        <a href="{% url 'application' application.job.id application.id %}" class="btn btn-info btn-sm btn-fill">View</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
