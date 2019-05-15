@@ -7,7 +7,7 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="header">
-                    <h4 class="title">Add Experience & Projects</h4>
+                    <h4 class="title">Add Matriculate/Intermediate Details</h4>
                 </div>
                 <div class="content">
                     <form method="POST">{% csrf_token %}
@@ -17,18 +17,27 @@
                                     <label>level</label>
                                     <select name="level" class="form-control" required>
                                         <option value="">-------Select------</option>
-                                        <option value="1">Matriculate</option>
-                                        <option value="2">Intermediate</option>
-                                        <option value="3">Graduation</option>
-                                        <option value="4">Post-Graduation</option>
-                                        <option value="5">PHD</option>
+                                        <option value="1">10th</option>
+                                        <option value="2">12th</option>
+
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>College / University</label>
-                                    <input type="text" class="form-control" placeholder="Collage/University" name="college" required>
+                                    <label>Board</label>
+                                    <!--<input type="text" class="form-control" placeholder="Collage/University" name="college" required> -->
+                                    <select name="college" class="form-control" required>
+                                        <option value="">-------Select------</option>
+                                        <option value="CBSE">CBSE</option>
+                                        <option value="ICSE">ICSE</option>
+                                        <option value="State">State</option>
+                                        <option value="Others">Others</option>
+
+
+
+                                    </select>
+
                                 </div>
                             </div>
                         </div>
@@ -48,7 +57,81 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-info btn-fill pull-right">Add Experience</button>
+                        <button type="submit" class="btn btn-info btn-fill pull-right">Add Education</button>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="header">
+                    <h4 class="title">Add Higher Education Details</h4>
+                </div>
+                <div class="content">
+                    <form method="POST">{% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>level</label>
+                                    <select name="level" class="form-control" required>
+                                        <option value="">-------Select------</option>
+                                        <option value="3">Graduation</option>
+                                        <option value="4">Post-Graduation</option>
+                                        <option value="5">PHD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>College/University</label>
+                                    <!--<input type="text" class="form-control" placeholder="Collage/University" name="college" required> -->
+                                    <select name="college" class="form-control" required>
+                                        <option value="">-------Select------</option>
+                                        {% for college in all_colleges %}
+                                        <option value="{{college}}">{{college}}</option>
+                                        {% endfor %}
+                                        <option value="Indian institute of technology">Indian institute of technology</option>
+                                        <option value="National institute of technology">National institute of technology</option>
+                                        <option value="Birla institute of technology">Birla institute of technology</option>
+                                        <option value="Delhi technical university">Delhi technical university</option>
+                                        <option value="Indian institute of information technology">Indian institute of information technology</option>
+                                        <option value="Vellore institute of technology">Vellore institute of technology</option>
+                                        <option value="Manipal universiy">Manipal universiy</option>
+                                        <option value="Thapar Institute of Engineering and Technology">Thapar Institute of Engineering and Technology, Patiala</option>
+                                        <option value="College of Engineering, Pune">College of Engineering, Pune</option>
+                                        <option value="Jaypee Institute of Information Technology">Jaypee Institute of Information Technology</option>
+                                        <option value="Vellore institute of technology">Vellore institute of technology</option>
+                                        <option value="SRM University">SRM University</option>
+                                        <option value="MIET College Jammu">MIET College Jammu</option>
+                                        <option value="others">others</option>
+
+
+
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Percentage obtained</label>
+                                    <input type="number" class="form-control" name="percent" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Complition Date</label>
+                                    <input type="date" class="form-control" name="completion_date" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info btn-fill pull-right">Add Education</button>
                         <div class="clearfix"></div>
                     </form>
                 </div>

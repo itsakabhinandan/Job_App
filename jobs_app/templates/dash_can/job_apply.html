@@ -118,7 +118,7 @@
             if(skill) {
             $('#skillsList').append(
                 
-                '<div class="skill-badge badge badge-primary" style="cursor: pointer">'+skill+'<input hidden name="skills[]" value="' + skill + '"></div>'
+                '<div class="skill-badge badge badge-primary" style="cursor: pointer">'+skill+'<input form="applyForm" hidden name="skills[]" value="' + skill + '"></div>'
             )
             $('.skill-badge').click(function() {
                 $(this).remove();

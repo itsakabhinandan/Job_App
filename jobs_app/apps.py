@@ -45,4 +45,7 @@ class JobsAppConfig(AppConfig):
 
     def ready(self):
         print(self, 'ready')
-        create_groups_with_permissions()
+        try:
+            create_groups_with_permissions()
+        except:
+            pass

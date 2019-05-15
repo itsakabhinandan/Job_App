@@ -36,6 +36,9 @@
                 <div class="card-heading">
                     <h2 class="title">Company Registration Form</h2>
                 </div>
+                <div>
+                    {{form.errors}}
+                </div>
                 <div class="card-body">
                     <form method="POST" action="{% url 'recruiter-signup' %}">{% csrf_token %}
 

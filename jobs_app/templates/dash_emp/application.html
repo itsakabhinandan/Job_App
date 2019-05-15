@@ -64,6 +64,15 @@
                 </div>
             </div>
         </div>
+        <div class="card">
+            <div class="content">
+                {% for edu in application.user.education_set.all %}
+                <div class="row">
+                    {{edu.get_level_display}} - {{edu.college}} -{{edu.percent}}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         {% if application.video_token %}
         <div class="card">
             <div class="content">

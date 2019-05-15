@@ -7,24 +7,28 @@ edu_score = {
 }
 
 tier1_colleges = [
-    'indian institute of technology',
-    'national institute of technology',
-    'birla institute of technology',
-    'delhi technical university',
-    'indian institute of information technology',
+    'Indian institute of technology',
+    'National institute of technology',
+
+    'Delhi technical university',
+    'Indian institute of information technology',
 ]
 
 tier2_colleges = [
-    'vellore institute of technology',
-    'manipal universiy',
-    'thapar',
+    'Birla institute of technology',
+    'Vellore institute of technology',
+    'Manipal universiy',
+    'SRM University'
+    'College of Engineering, Pune'
+    'Thapar Institute of Engineering and Technology, Patiala'
+    'Jaypee Institute of Information Technology'
 ]
 
 def _college_score(education):
     if education.level > 2:
-        if any(coll in education.college.lower() for coll in tier1_colleges):
+        if any(coll.lower() in education.college.lower() for coll in tier1_colleges):
             return 0.9
-        elif any(coll in education.college.lower() for coll in tier2_colleges):
+        elif any(coll.lower() in education.college.lower() for coll in tier2_colleges):
             return 0.6
         else:
             return 0.3
@@ -54,17 +58,17 @@ def _percent_score(education):
 def get_score_for_user_application(user, job_application):
     score = 0.0
     # score the maximum education level
-    edu = None
+    max_edu = None
     max_edu_lvl = 0
     for edu in user.education_set.all():
+        score += _college_score(edu)
+        score += _percent_score(edu)
         if edu.level > max_edu_lvl:
             max_edu = edu
             max_edu_lvl = edu.level
-    
-    if edu:
-        score += edu_score[edu.level]
-        score += _percent_score(edu)
-        score += _college_score(edu)
+
+    if max_edu:
+        score += edu_score[max_edu.level]
     
     # score the experience years
 

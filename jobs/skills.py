@@ -1,0 +1,1 @@
+SKILLS_LIST = ['django', 'python', 'postgres', 'fun']

@@ -19,6 +19,9 @@ from jobs_app.utils import parse_resume
 from jobs_app.scoring import get_score_for_user_application
 from jobs_app.update_profile import update_candidate_profile
 
+from jobs_app.skills import skills as SKILLS
+from jobs_app.colleges import colleges as COLLEGES
+
 
 class UserSignUpView(View):
 
@@ -66,7 +69,7 @@ class LoginView(View):
 
     def get(self, request):
         if request.user.is_authenticated:
-            if request.user.has_perm("can_access_recruiter_dashboard"):
+            if request.user.has_perm("jobs_app.can_create_job"):
                 return redirect("dash")
             return redirect("can_dash")
         return render(request, 'login/login.html')
@@ -79,7 +82,7 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                if user.has_perm('can_access_recruiter_dashboard'):
+                if user.has_perm('jobs_app.can_access_recruiter_dashboard'):
                     return redirect('dash')
                 return redirect('can_dash')
             else:
@@ -101,7 +104,7 @@ class LogoutView(View):
 
 class JobCreationView(PermissionRequiredMixin, View):
 
-    permission_required = ("can_create_job", )
+    permission_required = ("jobs_app.can_create_job", )
 
     def get(self, request):
         return render(request, 'dash_emp/create_job.html')
@@ -127,7 +130,7 @@ class JobDetailView(View):
 
 class JobUpdateView(PermissionRequiredMixin, View):
 
-    permission_required = ("can_create_job", )
+    permission_required = ("jobs_app.can_create_job", )
 
     def get(self, request, job_id):
         instance = get_object_or_404(Job, id=job_id)
@@ -156,7 +159,7 @@ class JobUpdateView(PermissionRequiredMixin, View):
 
 class RecruiterManageJobsView(PermissionRequiredMixin, View):
 
-    permission_required = ("can_create_job", )
+    permission_required = ("jobs_app.can_create_job", )
 
     def get(self, request):
         jobs = request.user.job_set.all()
@@ -266,10 +269,12 @@ class CandidateProfileView(LoginRequiredMixin, View):
 
     def get(self, request):
         skills = []
+        available_skills = settings.SKILLS_LIST
         if request.user.candidateprofile.skills:
             skills = request.user.candidateprofile.skills.split(',')
         return render(request, 'dash_can/profile.html', {
-            'skills': skills
+            'skills': skills,
+            'all_skills': SKILLS
         })
     
     def post(self, request):
@@ -295,14 +300,17 @@ class CandidateProfileView(LoginRequiredMixin, View):
             skills = request.user.candidateprofile.skills.split(',')
 
         return render(request, 'dash_can/profile.html', {
-            'skills': skills
+            'skills': skills,
+            'all_skills': SKILLS
         })
 
 
 class ExperienceView(LoginRequiredMixin, View):
 
     def get(self, request):
-        return render(request, 'dash_can/work_details.html')
+        return render(request, 'dash_can/work_details.html', {
+            'all_skills': SKILLS,
+        })
 
     def post(self, request):
         form = ExperienceForm(request.POST)
@@ -310,9 +318,13 @@ class ExperienceView(LoginRequiredMixin, View):
             experience = form.save(commit=False)
             experience.user = request.user
             experience.save()
-            return render(request, 'dash_can/work_details.html')
+            return render(request, 'dash_can/work_details.html', {
+                'all_skills': SKILLS
+            })
         print(form)
-        return render(request, 'dash_can/work_details.html')
+        return render(request, 'dash_can/work_details.html', {
+            'all_skills': SKILLS
+        })
 
 
 class DeleteExperienceView(LoginRequiredMixin, View):
@@ -328,7 +340,9 @@ class DeleteExperienceView(LoginRequiredMixin, View):
 class EducationView(LoginRequiredMixin, View):
 
     def get(self, request):
-        return render(request, 'dash_can/education.html')
+        return render(request, 'dash_can/education.html', {
+            'all_colleges': COLLEGES,
+        })
     
     def post(self, request):
         form = EducationForm(request.POST)
@@ -336,8 +350,12 @@ class EducationView(LoginRequiredMixin, View):
             education = form.save(commit=False)
             education.user = request.user
             education.save()
-            return render(request, 'dash_can/education.html')
-        return render(request, 'dash_can/education.html')
+            return render(request, 'dash_can/education.html', {
+                'all_colleges': COLLEGES,
+            })
+        return render(request, 'dash_can/education.html', {
+            'all_colleges': COLLEGES,
+        })
 
 class DeleteEducationView(LoginRequiredMixin, View):
 
@@ -351,7 +369,7 @@ class DeleteEducationView(LoginRequiredMixin, View):
 
 class ListApplicationsView(PermissionRequiredMixin, LoginRequiredMixin, View):
 
-    permission_required = ('can_access_recruiter_dashboard', )
+    permission_required = ('jobs_app.can_access_recruiter_dashboard', )
 
     def get(self, request, job_id):
         job = get_object_or_404(Job, id=job_id)
@@ -362,7 +380,7 @@ class ListApplicationsView(PermissionRequiredMixin, LoginRequiredMixin, View):
 
 class ApplicationView(PermissionRequiredMixin, LoginRequiredMixin, View):
 
-    permission_required = ('can_access_recruiter_dashboard', )
+    permission_required = ('jobs_app.can_access_recruiter_dashboard', )
 
     def get(self, request, job_id, app_id):
         application = get_object_or_404(JobApplication, id=app_id)
@@ -413,9 +431,9 @@ def home(request):
 def can_dash(request):
     return render(request, "dash_can/dashboard.html")
 
-class RecruiterDashboard(PermissionRequiredMixin, LoginRequiredMixin, View):
+class RecruiterDashboard(PermissionRequiredMixin, View):
 
-    permission_required = ('can_access_recruiter_dashboard', )
+    permission_required = ('jobs_app.can_access_recruiter_dashboard', )
 
     def get(self, request):
         return render(request, 'dash_emp/dashboard.html')

@@ -40,8 +40,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Gender</label>
-                                        <input name="gender" type="text" class="form-control" placeholder="Gender" value="{{user.candidateprofile.gender}}">
-                                    </div>
+                                        <select name="gender" class ="form-control">
+                                            <option value="">------</option>
+                                            <option value="male" {% if user.candidateprofile.gender == 'male' %} selected {% endif %}>Male</option>
+                                            <option value="female" {% if user.candidateprofile.gender == 'female' %} selected {% endif %}>Female</option>
+                                        </select>
+                                                                            </div>
                                 </div>
                             </div>
 
@@ -49,7 +53,12 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Skills</label>
-                                        <input id="skillInput" type="text" class="form-control" placeholder="skill">
+                                        <select id="skillSelect" class="form-control">
+                                            <option value="">----Pick skills----</option>
+                                            {% for skill in all_skills %}
+                                            <option value="{{skill}}">{{skill}}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="row">
                                             <div id="skillsList" class="col-md-12">
                                                 <div><small>Click to remove a skill</small></div>
@@ -67,6 +76,12 @@
                                 </div>
                             </div>
 
+                            <!-- <select>
+                                {% for skill in available_skills %}
+                                <option value="{{skill}}">{{skill}}</option>
+                                {% endfor %}
+                            </select> -->
+
                             
 
                             <div class="row">
@@ -81,7 +96,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>City</label>
+                                        <label>State</label>
                                         <input name="city" type="text" class="form-control" placeholder="City" value="{{user.candidateprofile.city}}">
                                     </div>
                                 </div>
@@ -143,6 +158,23 @@
             return false;
         }
     })
+
+    document.getElementById('skillSelect').addEventListener('change', function(event){
+
+            var skill = event.target.value;
+            console.log(skill)
+            if(skill) {
+            $('#skillsList').append(
+
+                '<div class="skill-badge badge badge-primary" style="cursor: pointer">'+skill+'<input hidden name="skills[]" value="' + skill + '"></div>'
+            )
+            $('.skill-badge').click(function() {
+                $(this).remove();
+            })
+            }
+            return false;
+        }
+    )
 
     $('.skill-badge').click(function() {
         $(this).remove();
